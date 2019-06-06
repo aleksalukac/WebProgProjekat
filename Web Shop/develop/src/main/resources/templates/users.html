@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Employees</title>
+    <meta charset="utf-8"/>
+
+
+    <link rel="stylesheet" type="text/css" href="http://aleksa.lukac.rs/t2/style.css">
+   <!-- <link rel="stylesheet" th:href="@{/css/employees.css}"/> -->
+</head>
+<body>
+<center>
+    <div style="background-color:white; width: auto;">
+
+
+        <h1>Users</h1>
+
+        <button onclick="location.href = '/add-user'">Add new user</button>
+        <br><br>
+        <table id="users">
+            <tr>
+                <th>Id</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>See more</th>
+                <th>Delete</th>
+            </tr>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.firstName}"></td>
+                <td th:text="${user.lastName}"></td>
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.address}"></td>
+                <td th:text="${user.email}"></td>
+                <td><a th:href="${'/users/' + user.id}">View</a></td>
+                <td><a th:href="${'/delete/' + user.id}">Delete</a></td>
+                <td> <p th:text=${user.role}></p></td>
+                <td th:if="${user.role.toString() != 'ADMIN'}">
+                    <form method="POST" th:action="@{/changeRole/(id=${user.id})}">
+                        <button type="submit" name="submit" value="value" class="link-button">Promeni ulogu</button>
+                    </form>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</center>
+
+
+</body>
+</html>

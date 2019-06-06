@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="http://aleksa.lukac.rs/t2/style.css">
+</head>
+<body>
+
+<div class="bg">
+    <center>
+        <div style="background-color:white; width: auto;">
+
+
+            <form th:action="@{/checker}" th:object="${loginDTO}" method="post">
+                <label for="username">Username:</label>
+                <input id="username" type="text" th:field="*{username}"/>
+                <br>
+                <label for="password">password:</label>
+                <input id="password" type="password" th:field="*{password}"/>
+                <br>
+                <input class="pure-button" type="submit">
+                <!--    <p th:text=${check}>tekst</p>-->
+                <div th:if="${#bools.isTrue(check)}">
+                    <div>
+                        Invalid username or password.
+                    </div>
+                </div>
+        </div>
+
+    </center>
+</div>
+
+</form>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Users</title>
+    <meta charset="utf-8"/>
+
+    <link rel="stylesheet" type="text/css" href="http://aleksa.lukac.rs/t2/style.css">
+    <!-- <link rel="stylesheet" th:href="@{/css/employees.css}"/> -->
+</head>
+<body>
+<center>
+    <div style="background-color:white; width: auto;">
+
+        <h2 style="text-align:center">Customer Profile</h2>
+        <div class="card">
+            <table>
+                <tr>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>Username</th>
+                    <th>Address</th>
+                    <th>Email</th>
+                    <th>Role</th>
+
+                </tr>
+                <tr>
+                    <td th:text="${user.firstName}"></td>
+                    <td th:text="${user.lastName}"></td>
+                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.address}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.role}"></td>
+                </tr>
+            </table>
+            <!-- <p class="title" th:text="${employee.position}"></p> -->
+            <br>
+        </div>
+        <form method="GET" th:action="@{/logout}">
+            <button type="submit" name="submit" value="value" class="link-button">LogOut</button>
+        </form>
+        <!-- <a id="employeeDisplayLink" th:href="${'/employees'}" style="text-align: center;">Back</a> -->
+
+
+    </div>
+
+</center>
+</body>
+</html>
