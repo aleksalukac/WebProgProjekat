@@ -7,18 +7,30 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uns.ac.rs.prodavnica.dto.LoginDTO;
+import uns.ac.rs.prodavnica.dto.ArticleDTO;
+import uns.ac.rs.prodavnica.entity.Article;
 import uns.ac.rs.prodavnica.entity.Logged;
 import uns.ac.rs.prodavnica.entity.Role;
 import uns.ac.rs.prodavnica.entity.User;
 import uns.ac.rs.prodavnica.repository.LoggedRepository;
 import uns.ac.rs.prodavnica.service.LoggedService;
 import uns.ac.rs.prodavnica.service.UserService;
+import uns.ac.rs.prodavnica.service.ArticleService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class UserController {
 
     @Autowired
     private UserService userService;
+
+    /*@Autowired
+    private BCryptPasswordEncoder encoder;*/
+
+    @Autowired
+    private ArticleService articleService;
 
     @Autowired
     private LoggedService loggedService;
@@ -32,6 +44,7 @@ public class UserController {
     public String stranica() {
         return "user";
     }
+
 
 
     @GetMapping("/admin-profile")
@@ -162,6 +175,9 @@ public class UserController {
     public String login(@ModelAttribute LoginDTO loginDTO, BindingResult errors, Model model){  //,RedirectAttributes rattrs) {
         String username = loginDTO.getUsername();
         String password = loginDTO.getPassword();
+        /*StandardPasswordEncoder encoder = new StandardPasswordEncoder("secret");
+        String result = encoder.encode("myPassword");
+        assertTrue(encoder.matches("myPassword", result));*/
         User user = userService.login(username, password);
 
         if (user != null) {
@@ -190,6 +206,23 @@ public class UserController {
         userService.registration(user);
 
         return "redirect:/login";
+    }
+
+    @PostMapping("/add-to-cart")
+    public String dodajUKorpu(@RequestParam(value = "id") int id) throws Exception {
+        Article article = articleService.findOne((long) id);
+
+        Logged logged = loggedService.findOne();
+
+        User user = userService.findOne(logged.getId());
+
+        if(user.getRole() == Role.CUSTOMER)
+        {
+            //model.addAttribute("users", userService.findAll());
+            return "redirect:/articles";
+        }
+        return "error-page";
+
     }
 
     @PostMapping("/changeRole")
@@ -245,6 +278,19 @@ public class UserController {
 
         model.addAttribute("check", true);
         return "login.html";
+    }
+
+    @GetMapping("/articles")
+    public String getArticles(Model model) {
+        List<Article> articles = articleService.findAll();
+        model.addAttribute("articles", articles);
+        /*List<ArticleDTO> links = new ArrayList<String>();
+        for (Article article: articles ) {
+
+            links.add("http://aleksa.lukac.rs/photos/" + article.getId().toString() + ".png");
+        }
+        model.addAttribute("links", links);*/
+        return "articles";
     }
 
     @GetMapping("/users")

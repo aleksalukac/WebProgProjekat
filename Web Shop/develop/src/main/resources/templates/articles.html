@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Articles</title>
+    <meta charset="utf-8"/>
+
+
+    <link rel="stylesheet" type="text/css" href="http://aleksa.lukac.rs/t2/style.css">
+    <!-- <link rel="stylesheet" th:href="@{/css/employees.css}"/> -->
+</head>
+<body>
+<center>
+    <div style="background-color:white; width: auto;">
+
+
+        <h1>Articles</h1>
+
+        <!--button onclick="location.href = '/add-user'">Add new user</button-->
+        <br><br>
+        <table id="articles">
+            <tr>
+                <th>Id</th>
+                <th>Article name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Image</th>
+                <th></th>
+            </tr>
+            <tr th:each="article : ${articles}">
+                <td th:text="${article.id}"></td>
+                <td th:text="${article.name}"></td>
+                <td th:text="${article.description}"></td>
+                <td th:text="${article.price}"></td>
+                <td th:text="${article.category}"></td>
+                <td> <img th:src="@{'http://aleksa.lukac.rs/photos/' + ${article.id} + '.png'}" height = 100px></td>
+                <td>
+                <form method="POST" th:action="@{/add-to-cart/(id=${article.id})}">
+                    <button type="submit" name="submit" value="value" class="link-button">Add to cart</button>
+                </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</center>
+
+
+</body>
+</html>

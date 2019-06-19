@@ -9,5 +9,5 @@ import uns.ac.rs.prodavnica.entity.Article;
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
 	List<Article> findAllByName(String name);
-
+	List<Article> findAll();
 }

@@ -55,8 +55,9 @@ public class Article implements Serializable{
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private User favUser;
 
-    public Article() {
 
+    public Article() {
+        //imageLink = "http://aleksa.lukac.rs/photos/" + id.toString() + ".png";
     }
 
     public Long getId() {
