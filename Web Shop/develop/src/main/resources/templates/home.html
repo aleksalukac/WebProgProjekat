@@ -15,9 +15,17 @@
 
             <h1>Welcome</h1>
             <h2>This is home page</h2>
-
+            <a class="pure-button" th:href="${'/articles'}">View all articles!</a>
+            <br>
+            <br>
+            <br>
+            <a class="pure-button" th:href="${'/my-profile'}">View your profile!</a>
+            <br><br>
+            <hr>
             <a class="pure-button" th:href="${'/login'}">Login</a>
-        </div>
+            <h2>Don't have an account? Register now!</h2>
+            <a class="pure-button" th:href="${'/add-user'}">Register</a>
+        </div><!-- add-user -->
 
     </center>
 </div>

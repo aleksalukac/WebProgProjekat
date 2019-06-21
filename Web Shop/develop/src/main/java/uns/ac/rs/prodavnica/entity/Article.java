@@ -1,4 +1,6 @@
 package uns.ac.rs.prodavnica.entity;
+import org.hibernate.annotations.ColumnDefault;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,6 +46,9 @@ public class Article implements Serializable{
     private Double price;
 
     @Column
+    private Boolean onSale;
+
+    @Column
     private Integer amount;
 
     @Column
@@ -57,7 +62,16 @@ public class Article implements Serializable{
 
 
     public Article() {
+        this.onSale = false;
         //imageLink = "http://aleksa.lukac.rs/photos/" + id.toString() + ".png";
+    }
+
+    public Boolean getOnSale() {
+        return onSale;
+    }
+
+    public void setOnSale(Boolean sale) {
+        this.onSale = sale;
     }
 
     public Long getId() {

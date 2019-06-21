@@ -4,6 +4,7 @@ import java.util.List;
 
 import uns.ac.rs.prodavnica.entity.User;
 
+
 public interface UserService {
 
 	User create(User user) throws Exception;

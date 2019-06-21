@@ -10,4 +10,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
 	List<Article> findAllByName(String name);
 	List<Article> findAll();
+	List<Article> findAllByOnSale(Boolean sale);
 }

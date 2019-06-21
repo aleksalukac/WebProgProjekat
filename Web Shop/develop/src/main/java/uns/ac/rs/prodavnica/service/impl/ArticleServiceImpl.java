@@ -29,4 +29,29 @@ public class ArticleServiceImpl implements ArticleService {
         return article;
     }
 
+    @Override
+    public List<Article> findAllOnSale() {
+        List<Article> articlesOnSale = articleRepository.findAllByOnSale(true);
+        return articlesOnSale;
+    }
+
+    @Override
+    public Article update(Article article) throws Exception {
+        Article articleToUpdate = articleRepository.getOne(article.getId());
+        if (articleToUpdate == null) {
+            throw new Exception("Article doesnt exist!");
+        }
+
+        articleToUpdate.setFavUser(article.getFavUser());
+        articleToUpdate.setAmount(article.getAmount());
+        articleToUpdate.setCartArticles(article.getCartArticles());
+
+        articleToUpdate.setDescription(article.getDescription());
+        articleToUpdate.setName(article.getName());
+        articleToUpdate.setPrice(article.getPrice());
+        articleToUpdate.setCategory(article.getCategory());
+
+        Article savedArticle = articleRepository.save(articleToUpdate);
+        return savedArticle;
+    }
 }

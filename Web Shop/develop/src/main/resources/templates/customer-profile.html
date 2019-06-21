@@ -35,6 +35,21 @@
             <!-- <p class="title" th:text="${employee.position}"></p> -->
             <br>
         </div>
+
+        <div class="card">
+            <table>
+                <tr>
+                    <th>Favorite articles</th>
+
+                </tr>
+                <tr>
+                    <tr th:each="article : ${favArticles}">
+                        <td th:text="${article.id}"></td>
+                </tr>
+            </table>
+            <!-- <p class="title" th:text="${employee.position}"></p> -->
+            <br>
+        </div>
         <form method="GET" th:action="@{/logout}">
             <button type="submit" name="submit" value="value" class="link-button">LogOut</button>
         </form>

@@ -7,24 +7,24 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uns.ac.rs.prodavnica.dto.LoginDTO;
-import uns.ac.rs.prodavnica.dto.ArticleDTO;
-import uns.ac.rs.prodavnica.entity.Article;
-import uns.ac.rs.prodavnica.entity.Logged;
-import uns.ac.rs.prodavnica.entity.Role;
-import uns.ac.rs.prodavnica.entity.User;
-import uns.ac.rs.prodavnica.repository.LoggedRepository;
+import uns.ac.rs.prodavnica.entity.*;
+import uns.ac.rs.prodavnica.service.*;
 import uns.ac.rs.prodavnica.service.LoggedService;
+import uns.ac.rs.prodavnica.service.CustomerService;
 import uns.ac.rs.prodavnica.service.UserService;
 import uns.ac.rs.prodavnica.service.ArticleService;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CustomerService customerService;
 
     /*@Autowired
     private BCryptPasswordEncoder encoder;*/
@@ -45,7 +45,46 @@ public class UserController {
         return "user";
     }
 
+    private Set<Article> articlesOnSale;
 
+    @PostMapping("/set-on-sale")
+    public String staviNaProdaju(@RequestParam(value = "id") int id) throws Exception {
+        Article article = articleService.findOne((long) id);
+
+        Logged logged = loggedService.findOne();
+
+        if(logged == null)
+        {
+            return "error-page";
+        }
+
+        User user = userService.findOne((logged.getUsername()));
+
+        //Customer customer = customerService.findOne(user.getId());
+
+        if(user.getRole() == Role.ADMIN)
+        {
+            if(article.getOnSale())
+            {
+                article.setOnSale(false);
+            }
+            else
+                article.setOnSale(true);
+
+            articleService.update(article);
+
+            //articlesOnSale.add(article);
+            return "redirect:/articles";
+        }
+        return "error-page";
+    }
+
+    @GetMapping("/sale")
+    public String pregledajProdaju(Model model) {
+        model.addAttribute("articles", articleService.findAllOnSale());
+
+        return "sale";
+    }
 
     @GetMapping("/admin-profile")
     public String showAdminProfile( Model model) {
@@ -96,6 +135,7 @@ public class UserController {
             if (u.getRole().equals(Role.CUSTOMER)) {
 
                 model.addAttribute("user", u);
+                model.addAttribute("favArticles",customerService.findOne(u.getId()).getFavoriteArticles());
 
             } else {
                 return "error-page";
@@ -143,14 +183,12 @@ public class UserController {
             rattrs.addFlashAttribute("check","true");  //neuspesna registracija
             return "redirect:/add-user";
         }
-        //System.out.println("here:" + u.getFirstName() + " " + u.getLastName());
 
         return "redirect:user-created";
     }
 
     @GetMapping("/login")
     public String login(Model model) {
-        // logika ako je ulogovan da ne vidi ovu stranicu, ako je vec ulogovan ne moze se opet logovati
         if (loggedService.getCurrentUser() != null) {
             return "error-page";
         }
@@ -158,7 +196,6 @@ public class UserController {
         model.addAttribute("loginDTO", new LoginDTO()); //<key, value> , loginDTO je kljuc
         model.addAttribute("check", false);
 
-        //System.out.println("h");
         return "login.html";
     }
 
@@ -208,16 +245,59 @@ public class UserController {
         return "redirect:/login";
     }
 
+    @PostMapping("/add-to-favorite")
+    public String dodajUOmiljene(@RequestParam(value = "id") int id) throws Exception {
+        Article article = articleService.findOne((long) id);
+
+        Logged logged = loggedService.findOne();
+
+        if(logged == null)
+        {
+            return "error-page";
+        }
+
+        User user = userService.findOne((logged.getUsername()));
+
+        //Customer customer = customerService.findOne(user.getId());
+
+        if(user.getRole() == Role.CUSTOMER)
+        {
+            Customer customer = customerService.findOne(user.getId());
+
+            Set<Article> favArticles = customer.getFavoriteArticles();
+
+            favArticles.add(article);
+
+            article.setFavUser(user);
+
+            customer.setFavoriteArticles(favArticles);
+
+            articleService.update(article);
+            customerService.update(customer);
+            //model.addAttribute("users", userService.findAll());
+            return "redirect:/articles";
+        }
+        return "error-page";
+
+    }
+
     @PostMapping("/add-to-cart")
     public String dodajUKorpu(@RequestParam(value = "id") int id) throws Exception {
         Article article = articleService.findOne((long) id);
 
         Logged logged = loggedService.findOne();
 
-        User user = userService.findOne(logged.getId());
+        if(logged == null)
+        {
+            return "error-page";
+        }
+
+        User user = userService.findOne(logged.getUsername());
 
         if(user.getRole() == Role.CUSTOMER)
         {
+            Customer customer = customerService.findOne(user.getId());
+
             //model.addAttribute("users", userService.findAll());
             return "redirect:/articles";
         }
@@ -244,6 +324,18 @@ public class UserController {
         return "redirect:/users";
     }
 
+    @GetMapping("/back")
+    public String goBack()
+    {
+        Logged logged = loggedService.findOne();
+
+        if(logged == null)
+        {
+            return "redirect:/login";
+        }
+        return "redirect:/my-profile";
+    }
+
     @GetMapping("/my-profile")
     public String goToMyProfile(Model model)
     {
@@ -252,15 +344,16 @@ public class UserController {
         if(logged == null)
         {
             model.addAttribute("check", true);
-            return "login.html";
+            return "redirect:login";
         }
+
         System.out.println(logged);
         User user = userService.findOne(logged.getUsername());
 
         if(user == null)
         {
             model.addAttribute("check", true);
-            return "login.html";
+            return "redirect:login";
         }
 
         if (user.getRole().equals(Role.ADMIN)) {
@@ -282,14 +375,23 @@ public class UserController {
 
     @GetMapping("/articles")
     public String getArticles(Model model) {
+
         List<Article> articles = articleService.findAll();
         model.addAttribute("articles", articles);
-        /*List<ArticleDTO> links = new ArrayList<String>();
-        for (Article article: articles ) {
 
-            links.add("http://aleksa.lukac.rs/photos/" + article.getId().toString() + ".png");
+        Logged logged = loggedService.findOne();
+
+        if(logged == null)
+        {
+            model.addAttribute("user", null);
         }
-        model.addAttribute("links", links);*/
+        else
+        {
+            User user = userService.findOne(logged.getUsername());
+
+            model.addAttribute("user", user);
+        }
+        
         return "articles";
     }
 
@@ -298,7 +400,7 @@ public class UserController {
 
         Logged logged = loggedService.findOne();
 
-        System.out.println(logged);
+       //System.out.println(logged);
         User user = userService.findOne(logged.getUsername());
         /*if(user != null)
         {
@@ -326,7 +428,7 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public String getUser(@PathVariable(name = "id") Long id,
-                              Model model) {
+                          Model model) {
         model.addAttribute("user", userService.findOne(id));
 
         return "admin-view-userr.html";

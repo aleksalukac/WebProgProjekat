@@ -8,4 +8,8 @@ import java.util.List;
 public interface ArticleService {
     List<Article> findAll();
     Article findOne(Long id);
+
+    List<Article> findAllOnSale();
+
+    Article update(Article article) throws Exception;
 }

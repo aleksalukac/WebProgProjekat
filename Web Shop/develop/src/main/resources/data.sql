@@ -5,9 +5,9 @@
  INSERT INTO DELIVERER (id) VALUES (1);
  INSERT INTO CUSTOMER (id) VALUES (2);
 
- INSERT INTO ARTICLE (name, description, price, amount, category) VALUES ('smoki', 'slane grickalice', 125.00, 6, '0');
- INSERT INTO ARTICLE (name, description, price, amount, category) VALUES ('jafa', 'keks', 149.99, 10, '1');
- INSERT INTO ARTICLE (name, description, price, amount, category) VALUES ('fanta', 'gazirani sok', 60.00, 6, '2');
+ INSERT INTO ARTICLE (name, description, price, amount, category, on_sale) VALUES ('smoki', 'slane grickalice', 125.00, 6, '0', false);
+ INSERT INTO ARTICLE (name, description, price, amount, category, on_sale) VALUES ('jafa', 'keks', 149.99, 10, '1', false);
+ INSERT INTO ARTICLE (name, description, price, amount, category, on_sale) VALUES ('fanta', 'gazirani sok', 60.00, 6, '2', true);
 
 
  INSERT INTO CART (datetime) VALUES ('2018-08-10');
