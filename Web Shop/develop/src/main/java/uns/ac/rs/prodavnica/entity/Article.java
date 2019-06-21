@@ -5,15 +5,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 
 /*enum ArticleCategory {
@@ -57,8 +49,8 @@ public class Article implements Serializable{
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private User favUser;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<User> favUser;
 
 
     public Article() {
@@ -138,11 +130,11 @@ public class Article implements Serializable{
         this.user = user;
     }
 
-    public User getFavUser() {
+    public Set<User> getFavUser() {
         return favUser;
     }
 
-    public void setFavUser(User favUser) {
+    public void setFavUser(Set<User> favUser) {
         this.favUser = favUser;
     }
 

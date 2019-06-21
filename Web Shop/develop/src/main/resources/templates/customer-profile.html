@@ -45,6 +45,11 @@
                 <tr>
                     <tr th:each="article : ${favArticles}">
                         <td th:text="${article.id}"></td>
+                        <td >
+                            <form method="POST" th:action="@{/delete-from-favorite/(id=${article.id})}">
+                                <button type="submit" name="submit" value="value" class="link-button">Delete from favorite articles</button>
+                            </form>
+                        </td>
                 </tr>
             </table>
             <!-- <p class="title" th:text="${employee.position}"></p> -->

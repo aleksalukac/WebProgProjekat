@@ -292,7 +292,11 @@ public class UserController {
 
             favArticles.add(article);
 
-            article.setFavUser(user);
+            Set<User> favUser = article.getFavUser();
+
+            favUser.add(user);
+
+            article.setFavUser(favUser);
 
             customer.setFavoriteArticles(favArticles);
 
@@ -327,6 +331,31 @@ public class UserController {
         }
         return "error-page";
 
+    }
+
+    @PostMapping("/delete-from-favorite")
+    public String izbaciIzOmiljenih(@RequestParam(value = "id") int id) throws Exception {
+
+        Logged logged = loggedService.findOne();
+
+        User user = userService.findOne(logged.getUsername());
+
+        Customer customer = customerService.findOne(user.getId());
+
+        Set<Article> favArticles = customer.getFavoriteArticles();
+        favArticles.remove(articleService.findOne((long)id));
+        customer.setFavoriteArticles(favArticles);
+
+        Article article = articleService.findOne((long)id);
+
+        Set<User> favUsers = article.getFavUser();
+        favUsers.remove(user);
+        article.setFavUser(favUsers);
+
+        articleService.update(article);
+        customerService.update(customer);
+
+        return "redirect:/my-profile";
     }
 
     @PostMapping("/changeRole")

@@ -16,7 +16,7 @@ public class Customer extends User implements Serializable {
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Cart> buyerCarts = new HashSet<>();
 
-    @OneToMany(mappedBy = "favUser", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(mappedBy = "favUser", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Article> favoriteArticles = new HashSet<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
