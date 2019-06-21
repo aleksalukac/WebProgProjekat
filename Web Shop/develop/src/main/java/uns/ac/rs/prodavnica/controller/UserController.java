@@ -24,6 +24,10 @@ public class UserController {
     private UserService userService;
 
     @Autowired
+    private DelivererService delivererService;
+
+
+    @Autowired
     private CustomerService customerService;
 
     /*@Autowired
@@ -168,7 +172,7 @@ public class UserController {
     }
 
     @PostMapping("/save-user")
-    public String saveUser(@ModelAttribute User user, BindingResult errors, Model model,RedirectAttributes rattrs)
+    public String saveUser(@ModelAttribute User user, BindingResult errors, Model model, RedirectAttributes rattrs)
             throws Exception {
 
         user.setFirstName(user.getFirstName());
@@ -177,6 +181,7 @@ public class UserController {
         user.setPassword(user.getPassword());
         user.setRole(user.getRole());
         user.setTelephone(user.getTelephone());
+
         User u = this.userService.registration(user);
         if (u == null)
         {
@@ -184,8 +189,27 @@ public class UserController {
             return "redirect:/add-user";
         }
 
+        userService.delete(u.getId());
+
+        if(user.getRole().toString() == "DELIVERER")
+        {
+            delivererService.addNew(user);
+        }
+        else
+        {
+            customerService.addNew(user);
+        }
+
+
         return "redirect:user-created";
     }
+
+    /*@GetMapping("/addDel")
+    public String bla()
+    {
+        delivererService.addNew((long)5);
+        return "error-page";
+    }*/
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -312,15 +336,20 @@ public class UserController {
         if(user.getRole() == Role.ADMIN)
             return "error-page";
 
+        userService.delete((long)id);
+
         if(user.getRole() == Role.DELIVERER)
         {
             user.setRole(Role.CUSTOMER);
+            customerService.addNew(user);
         }
         else
         {
             user.setRole(Role.DELIVERER);
+            delivererService.addNew(user);
         }
-        userService.update(user);
+
+        //userService.update(user);
         return "redirect:/users";
     }
 
@@ -391,7 +420,7 @@ public class UserController {
 
             model.addAttribute("user", user);
         }
-        
+
         return "articles";
     }
 

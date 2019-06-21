@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uns.ac.rs.prodavnica.entity.Customer;
+import uns.ac.rs.prodavnica.entity.Role;
+import uns.ac.rs.prodavnica.entity.User;
 import uns.ac.rs.prodavnica.repository.CustomerRepository;
 import uns.ac.rs.prodavnica.service.CustomerService;
 
@@ -33,4 +35,25 @@ public class CustomerServiceImpl implements CustomerService {
         return savedCustomer;
     }
 
+
+    @Override
+    public void delete(Long id) {
+        Customer customer = customerRepository.getOne(id);
+        customerRepository.delete(customer);
+    }
+
+
+    @Override
+    public Customer addNew(User user) {
+        Customer customer = new Customer();
+        customer.setRole(Role.CUSTOMER);
+        customer.setFirstName(user.getFirstName());
+        customer.setLastName(user.getLastName());
+        customer.setPassword(user.getPassword());
+        customer.setTelephone(user.getTelephone());
+        customer.setAddress(user.getAddress());
+        customer.setEmail(user.getEmail());
+        customer.setUsername(user.getUsername());
+        return customerRepository.save(customer);
+    }
 }
