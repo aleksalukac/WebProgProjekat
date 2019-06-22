@@ -3,10 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>User created</title>
+    <link rel="shortcut icon"
+          href="http://aleksa.lukac.rs/img/logo3.png" />
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+
 
     <link rel="stylesheet" type="text/css" href="http://aleksa.lukac.rs/t2/style.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/menu.css}"/>
 </head>
 <body>
+
+<ul>
+    <li style="float:left"><font size="5"><i><img src="http://www.aleksa.lukac.rs/img/logotop.png" width="50px"/></i></font></li>
+    <li><a th:href="${'/login-logout'}">Login / Logout</a></li>
+    <li><a th:href="${'/articles'}">Articles</a></li>
+    <li><a th:href="${'/my-profile'}">My profile</a></li>
+
+</ul>
 
 <center>
     <div style="background-color:white; width: auto;">

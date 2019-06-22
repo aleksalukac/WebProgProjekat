@@ -400,6 +400,19 @@ public class UserController {
         return "redirect:/my-profile";
     }
 
+    @GetMapping("/login-logout")
+    public String loginLogout(Model model) {
+
+        Logged logged = loggedService.findOne();
+
+        if(logged == null)
+        {
+            model.addAttribute("check", true);
+            return "redirect:login";
+        }
+        return "redirect:logout";
+    }
+
     @PostMapping("/delete-from-cart")
     public String izbaciIzKorpe(@RequestParam(value = "id") int id) throws Exception {
 
@@ -472,7 +485,7 @@ public class UserController {
             return "redirect:login";
         }
 
-        System.out.println(logged);
+        //System.out.println(logged);
         User user = userService.findOne(logged.getUsername());
 
         if(user == null)

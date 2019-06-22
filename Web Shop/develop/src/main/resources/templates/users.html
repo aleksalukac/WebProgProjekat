@@ -3,19 +3,33 @@
 <head>
     <title>Users</title>
     <meta charset="utf-8"/>
+    <link rel="shortcut icon"
+          href="http://aleksa.lukac.rs/img/logo3.png" />
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+
 
 
     <link rel="stylesheet" type="text/css" href="http://aleksa.lukac.rs/t2/style.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/menu.css}"/>
    <!-- <link rel="stylesheet" th:href="@{/css/employees.css}"/> -->
 </head>
 <body>
+
+<ul>
+    <li style="float:left"><font size="5"><i><img src="http://www.aleksa.lukac.rs/img/logotop.png" width="50px"/></i></font></li>
+    <li><a th:href="${'/login-logout'}">Login / Logout</a></li>
+    <li><a th:href="${'/articles'}">Articles</a></li>
+    <li><a th:href="${'/my-profile'}">My profile</a></li>
+
+</ul>
+
 <center>
     <div style="background-color:white; width: auto;">
 
 
         <h1>Users</h1>
 
-        <button onclick="location.href = '/add-user'">Add new user</button>
+        <button onclick="location.href = '/add-user'"  class="pure-button">Add new user</button>
         <br><br>
         <table id="users">
             <tr>
@@ -37,7 +51,7 @@
                 <td> <p th:text=${user.role}></p></td>
                 <td th:if="${user.role.toString() != 'ADMIN'}">
                     <form method="POST" th:action="@{/changeRole/(id=${user.id})}">
-                        <button type="submit" name="submit" value="value" class="link-button">Promeni ulogu</button>
+                        <button type="submit" name="submit" value="value" class="pure-button">Promeni ulogu</button>
                     </form>
 
                 </td>

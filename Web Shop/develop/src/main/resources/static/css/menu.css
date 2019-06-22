@@ -1,0 +1,106 @@
+
+ul {
+    z-index: 1;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li i {
+    z-index: 1;
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li {
+    z-index: 1;
+  float: right;
+}
+
+li a, .dropbtn {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  z-index: 1;
+}
+
+li a:hover, .dropdown:hover .dropbtn {
+  background-color: red;
+  z-index: 1;
+}
+
+li.dropdown {
+  display: inline-block;
+  z-index: 1;
+}
+
+.dropdown-content {
+    z-index: 1;
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+    z-index: 1;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1; z-index: 1;}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+  z-index: 1;
+}
+
+
+
+
+.onClickTextOverImage{
+  width:300px;
+  height:400px;
+  background-size:cover;
+  display:inline-block;
+  border-radius:16px;
+  margin:4px;
+  box-shadow:0 0 16px rgba(0,0,0,0.5);
+  cursor:pointer;
+  position:relative;
+}
+
+.onClickTextOverImage div{
+  position:absolute;
+  color:#fff;
+  padding:8px;
+  top:0;
+  bottom:0;
+  right:0;
+  left:0;
+  background-color:rgba(0,0,0,0.5);
+  border-radius:16px;
+  padding-top:35%;
+  text-align:center;
+  opacity:0;
+  visibility:hidden;
+  transition:.3s;
+}
+
+.onClickTextOverImage.show div{
+  opacity:1;
+  padding-top:40%;
+  visibility:visible;
+}
