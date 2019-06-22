@@ -44,12 +44,34 @@
                 </tr>
                 <tr>
                     <tr th:each="article : ${favArticles}">
-                        <td th:text="${article.id}"></td>
+                        <td> <img th:src="@{'http://aleksa.lukac.rs/photos/' + ${article.id} + '.png'}" height = 100px></td>
                         <td >
                             <form method="POST" th:action="@{/delete-from-favorite/(id=${article.id})}">
                                 <button type="submit" name="submit" value="value" class="link-button">Delete from favorite articles</button>
                             </form>
                         </td>
+                </tr>
+            </table>
+            <!-- <p class="title" th:text="${employee.position}"></p> -->
+            <br>
+        </div>
+
+        <div class="card">
+            <table>
+                <tr>
+                    <th>Articles in cart</th>
+
+                </tr>
+                <tr>
+                <tr th:if="${cartArticles != null}">
+                    <tr th:each="article : ${cartArticles}">
+                        <td> <img th:src="@{'http://aleksa.lukac.rs/photos/' + ${article.id} + '.png'}" height = 100px></td>
+                        <td >
+                            <form method="POST" th:action="@{/delete-from-cart/(id=${article.id})}">
+                                <button type="submit" name="submit" value="value" class="link-button">Delete from cart</button>
+                            </form>
+                        </td>
+                    </tr>
                 </tr>
             </table>
             <!-- <p class="title" th:text="${employee.position}"></p> -->

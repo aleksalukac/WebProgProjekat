@@ -1,18 +1,8 @@
 package uns.ac.rs.prodavnica.entity;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 /*enum CartStatus {
 	BOUGHT, SHIPPING, CANCELED, DELIVERED
@@ -30,17 +20,17 @@ public class Cart implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<CartArticle> CartArticles = new HashSet<>();
-
 	@Column
 	private Date datetime;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private User customer;
+	private Customer customer;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private User deliver;
+	private Deliverer deliverer;
+
+	@ManyToMany(mappedBy = "carts",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private List<Article> articles = new ArrayList<>();
 
 	@Column
 	private CartStatus status;
@@ -49,12 +39,16 @@ public class Cart implements Serializable {
 
 	}
 
-	public Set<CartArticle> getCartArticles() {
-		return CartArticles;
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
 	}
 
-	public void setCartArticles(Set<CartArticle> CartArticles) {
-		this.CartArticles = CartArticles;
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public Date getDatetime() {
@@ -65,20 +59,28 @@ public class Cart implements Serializable {
 		this.datetime = datetime;
 	}
 
-	public User getBuyer() {
+	public Customer getCustomer() {
 		return customer;
 	}
 
-	public void setBuyer(User customer) {
+	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
 
-	public User getDeliver() {
-		return deliver;
+	public Deliverer getDeliverer() {
+		return deliverer;
 	}
 
-	public void setDeliver(User deliver) {
-		this.deliver = deliver;
+	public void setDeliverer(Deliverer deliverer) {
+		this.deliverer = deliverer;
+	}
+
+	public List<Article> getArticles() {
+		return articles;
+	}
+
+	public void setArticles(List<Article> articles) {
+		this.articles = articles;
 	}
 
 	public CartStatus getStatus() {
@@ -87,11 +89,5 @@ public class Cart implements Serializable {
 
 	public void setStatus(CartStatus status) {
 		this.status = status;
-	}
-
-	@Override
-	public String toString() {
-		return "Cart [CartArticles=" + CartArticles + ", datetime=" + datetime + ", customer=" + customer + ", deliver=" + deliver
-				+ ", status=" + status + "]";
 	}
 }

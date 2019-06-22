@@ -44,8 +44,10 @@ public class ArticleServiceImpl implements ArticleService {
 
         articleToUpdate.setFavUser(article.getFavUser());
         articleToUpdate.setAmount(article.getAmount());
-        articleToUpdate.setCartArticles(article.getCartArticles());
-
+        articleToUpdate.setCarts(article.getCarts());
+       // articleToUpdate.setCartArticles(article.getCartArticles());
+        articleToUpdate.setOnSale(article.getOnSale());
+        articleToUpdate.setUser(article.getUser());
         articleToUpdate.setDescription(article.getDescription());
         articleToUpdate.setName(article.getName());
         articleToUpdate.setPrice(article.getPrice());

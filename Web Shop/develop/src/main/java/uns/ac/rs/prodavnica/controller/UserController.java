@@ -9,10 +9,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uns.ac.rs.prodavnica.dto.LoginDTO;
 import uns.ac.rs.prodavnica.entity.*;
 import uns.ac.rs.prodavnica.service.*;
-import uns.ac.rs.prodavnica.service.LoggedService;
-import uns.ac.rs.prodavnica.service.CustomerService;
-import uns.ac.rs.prodavnica.service.UserService;
-import uns.ac.rs.prodavnica.service.ArticleService;
 
 import java.util.List;
 import java.util.Set;
@@ -35,6 +31,9 @@ public class UserController {
 
     @Autowired
     private ArticleService articleService;
+
+    @Autowired
+    private CartService cartService;
 
     @Autowired
     private LoggedService loggedService;
@@ -140,6 +139,7 @@ public class UserController {
 
                 model.addAttribute("user", u);
                 model.addAttribute("favArticles",customerService.findOne(u.getId()).getFavoriteArticles());
+                model.addAttribute("cartArticles",customerService.findOne(u.getId()).getArticlesInCart());
 
             } else {
                 return "error-page";
@@ -292,7 +292,7 @@ public class UserController {
 
             favArticles.add(article);
 
-            Set<User> favUser = article.getFavUser();
+            List<User> favUser = article.getFavUser();
 
             favUser.add(user);
 
@@ -326,6 +326,48 @@ public class UserController {
         {
             Customer customer = customerService.findOne(user.getId());
 
+            List<Article> cartArticles = customer.getArticlesInCart();
+
+            cartArticles.add(article);
+
+            List<User> users = article.getCart();
+
+            users.add(user);
+
+            article.setCart(users);
+
+            customer.setArticlesInCart(cartArticles);
+
+            articleService.update(article);
+            customerService.update(customer);
+
+            /*List<Cart> customerCarts = customer.getCarts(); //jako ruzan deo koda
+
+            Cart customerCart;
+
+            if(customerCarts.size() == 0)
+            {
+                customerCart = new Cart();
+            }
+            else
+            {
+                customerCart = customerCarts.get((customer.getCarts().size() - 1));
+            }
+
+            List<Article> articlesInCart = customerCart.getArticles();
+            articlesInCart.add(article);
+            customerCart.setArticles(articlesInCart);
+
+            if(customerCarts.size() > 0)
+            {
+                customerCarts.remove(customer.getCarts().size() - 1);
+            }
+            customerCarts.add(customerCart);
+
+            articleService.update(article);
+            cartService.update(customerCarts.get((customer.getCarts().size() - 1)));
+            customerService.update(customer);*/
+
             //model.addAttribute("users", userService.findAll());
             return "redirect:/articles";
         }
@@ -348,9 +390,34 @@ public class UserController {
 
         Article article = articleService.findOne((long)id);
 
-        Set<User> favUsers = article.getFavUser();
+        List<User> favUsers = article.getFavUser();
         favUsers.remove(user);
         article.setFavUser(favUsers);
+
+        articleService.update(article);
+        customerService.update(customer);
+
+        return "redirect:/my-profile";
+    }
+
+    @PostMapping("/delete-from-cart")
+    public String izbaciIzKorpe(@RequestParam(value = "id") int id) throws Exception {
+
+        Logged logged = loggedService.findOne();
+
+        User user = userService.findOne(logged.getUsername());
+
+        Customer customer = customerService.findOne(user.getId());
+
+        List<Article> favArticles = customer.getArticlesInCart();
+        favArticles.remove(articleService.findOne((long)id));
+        customer.setArticlesInCart(favArticles);
+
+        Article article = articleService.findOne((long)id);
+
+        List<User> cart = article.getCart();
+        cart.remove(user);
+        article.setCart(cart);
 
         articleService.update(article);
         customerService.update(customer);

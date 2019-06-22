@@ -2,7 +2,9 @@ package uns.ac.rs.prodavnica.entity;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -25,8 +27,8 @@ public class Article implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<CartArticle> CartArticles = new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Cart> carts = new ArrayList<>();
 
     @Column
     private String name;
@@ -50,7 +52,18 @@ public class Article implements Serializable{
     private User user;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<User> favUser;
+    private List<User> favUser;
+
+    public List<User> getCart() {
+        return cart;
+    }
+
+    public void setCart(List<User> cart) {
+        this.cart = cart;
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<User> cart;
 
 
     public Article() {
@@ -58,12 +71,8 @@ public class Article implements Serializable{
         //imageLink = "http://aleksa.lukac.rs/photos/" + id.toString() + ".png";
     }
 
-    public Boolean getOnSale() {
-        return onSale;
-    }
-
-    public void setOnSale(Boolean sale) {
-        this.onSale = sale;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     public Long getId() {
@@ -74,12 +83,12 @@ public class Article implements Serializable{
         this.id = id;
     }
 
-    public Set<CartArticle> getCartArticles() {
-        return CartArticles;
+    public List<Cart> getCarts() {
+        return carts;
     }
 
-    public void setCartArticles(Set<CartArticle> CartArticles) {
-        this.CartArticles = CartArticles;
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
     }
 
     public String getName() {
@@ -106,6 +115,14 @@ public class Article implements Serializable{
         this.price = price;
     }
 
+    public Boolean getOnSale() {
+        return onSale;
+    }
+
+    public void setOnSale(Boolean onSale) {
+        this.onSale = onSale;
+    }
+
     public Integer getAmount() {
         return amount;
     }
@@ -130,18 +147,11 @@ public class Article implements Serializable{
         this.user = user;
     }
 
-    public Set<User> getFavUser() {
+    public List<User> getFavUser() {
         return favUser;
     }
 
-    public void setFavUser(Set<User> favUser) {
+    public void setFavUser(List<User> favUser) {
         this.favUser = favUser;
-    }
-
-    @Override
-    public String toString() {
-        return "Article [id=" + id + ", CartArticles=" + CartArticles + ", name=" + name + ", description=" + description
-                + ", price=" + price + ", amount=" + amount + ", category=" + category + ", user=" + user + ", favUser="
-                + favUser + "]";
     }
 }

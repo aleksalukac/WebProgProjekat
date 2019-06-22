@@ -25,7 +25,7 @@ public class Deliverer extends User implements Serializable {
         this.id = id;
     }
 
-    @OneToMany(mappedBy = "deliver", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "deliverer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Cart> delivererCarts = new HashSet<>();
 
     public Set<Cart> getDeliverCarts() {
