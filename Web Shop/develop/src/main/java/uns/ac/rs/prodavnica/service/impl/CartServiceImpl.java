@@ -8,6 +8,8 @@ import uns.ac.rs.prodavnica.entity.Cart;
 import uns.ac.rs.prodavnica.repository.CartRepository;
 import uns.ac.rs.prodavnica.service.CartService;
 
+import java.util.List;
+
 @Service
 public class CartServiceImpl implements CartService {
     @Autowired
@@ -15,10 +17,43 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
+    public Cart create(Cart cart) throws Exception {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    @Override
+    public Cart findOne(Long id) {
+        Cart cart = cartRepository.getOne(id);
+        return cart;
+    }
+
+    @Override
+    public List<Cart> findAll() {
+        List<Cart> carts = cartRepository.findAll();
+        return carts;
+    }
+
+
+    @Override
+    public Cart addNew(Cart cart) {
+        Cart c = new Cart();
+        c.setDatetime(cart.getDatetime());
+        c.setStatus(cart.getStatus());
+        c.setCustomer(cart.getCustomer());
+        c.setArticles(cart.getArticles());
+        c.setDeliverer(cart.getDeliverer());
+        return cartRepository.save(c);
+    }
+
+    @Override
     public Cart update(Cart cart) throws Exception {
         Cart cartToUpdate = cartRepository.getOne(cart.getId());
         if (cartToUpdate == null) {
-            throw new Exception("Cart doesnt exist!");
+
+            return create(cart);
+            //throw new Exception("Cart doesnt exist!");
         }
 
         cartToUpdate.setArticles(cart.getArticles());

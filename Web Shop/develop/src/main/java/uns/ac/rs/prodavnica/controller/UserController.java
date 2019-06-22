@@ -10,6 +10,8 @@ import uns.ac.rs.prodavnica.dto.LoginDTO;
 import uns.ac.rs.prodavnica.entity.*;
 import uns.ac.rs.prodavnica.service.*;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -118,6 +120,7 @@ public class UserController {
             if (u.getRole().equals(Role.DELIVERER)) {
 
                 model.addAttribute("user", u);
+                model.addAttribute("carts",cartService.findAll());
 
             } else {
                 return "error-page";
@@ -140,6 +143,13 @@ public class UserController {
                 model.addAttribute("user", u);
                 model.addAttribute("favArticles",customerService.findOne(u.getId()).getFavoriteArticles());
                 model.addAttribute("cartArticles",customerService.findOne(u.getId()).getArticlesInCart());
+                int price = 0;
+                for(Article art : customerService.findOne(u.getId()).getArticlesInCart())
+                {
+                    price += art.getPrice();
+                }
+                model.addAttribute("price",price);
+                model.addAttribute("carts", customerService.findOne(u.getId()).getCarts());
 
             } else {
                 return "error-page";
@@ -413,6 +423,130 @@ public class UserController {
         return "redirect:logout";
     }
 
+    @PostMapping("/buy-cart")
+    public String kupiKorpu(@RequestParam(value = "id") int id) throws Exception {
+        Logged logged = loggedService.findOne();
+
+        User user = userService.findOne(logged.getUsername());
+
+        Customer customer = customerService.findOne(user.getId());
+
+        List<Article> cartArticles = customer.getArticlesInCart();
+        List<Article> copy2 = new ArrayList<>();
+        copy2.addAll(cartArticles);
+
+        for(Article article : copy2)
+        {
+            List<User> cart2 = article.getCart();
+            cart2.remove(user);
+            article.setCart(cart2);
+
+            articleService.update(article);
+        }
+
+        List<Article>  copy = new ArrayList<>();
+        copy.addAll(cartArticles);
+
+        customer.deleteArticlesInCart();
+
+        customerService.update(customer);
+
+        //
+
+        Cart cart = new Cart();
+        cart.setArticles(copy);
+        cart.setDatetime(new Date());
+        cart.setStatus(CartStatus.BOUGHT);
+        cart.setCustomer(customer);
+        customer.addCarts(cart);
+
+        cartService.addNew(cart);
+
+
+        List<Article> articleList = new ArrayList<>();
+        articleList.addAll(cart.getArticles());
+
+        for(Article article : articleList)
+        {
+            article.addCart(cart);
+
+            articleService.update(article);
+            cartService.update(cart);
+        }
+
+        cart.generatePrice();
+
+        customerService.update(customer);
+        cartService.update(cart);
+/*
+
+        cartArticles.remove(articleService.findOne((long)id));
+        customer.setArticlesInCart(cartArticles);
+
+        List<User> cart2 = article.getCart();
+        cart2.remove(user);
+        article.setCart(cart2);
+
+        articleService.update(article);
+        customerService.update(customer);
+
+        //TREBA SVE PONOVO
+
+
+        List<Article> articlesInCart = customer.getArticlesInCart();
+        Cart cart = new Cart();
+        List<Article>  copy = new ArrayList<>();
+        copy.addAll(articlesInCart);
+
+        cart.setArticles(copy);
+        cart.setCustomer(customer);
+        cart.setStatus(CartStatus.BOUGHT);
+        cart.setDatetime(new Date());
+
+
+        List<Cart> carts = customer.getCarts();
+        carts.add(cart);
+        customer.setCarts(carts);
+
+        //List<Article> s = new ArrayList<>();
+        //articlesInCart.clear();
+        //customer.setArticlesInCart(articlesInCart);
+       //customer.setArticlesInCart(s);
+        customer.deleteArticlesInCart();
+
+        //cartService.addNew(cart);
+        //cartService.update(cart);
+
+        for(Article article : articlesInCart)
+        {
+            List<Article> favArticles = customer.getArticlesInCart();
+            favArticles.remove(articleService.findOne((long)id));
+            customer.setArticlesInCart(favArticles);
+
+            List<User> cart2 = article.getCart();
+            cart2.remove(user);
+            article.setCart(cart2);
+
+            articleService.update(article);
+            customerService.update(customer);
+
+            List<User> users = article.getCart();
+            users.remove(user.getId());
+            article.setCart(users);
+
+
+            carts = article.getCarts();
+            carts.add(cart);
+            article.setCarts(carts);
+            articleService.update(article);
+        }
+
+        cartService.addNew(cart);
+        customerService.update(customer);*/
+
+        return "redirect:/my-profile";
+    }
+
     @PostMapping("/delete-from-cart")
     public String izbaciIzKorpe(@RequestParam(value = "id") int id) throws Exception {
 
@@ -460,6 +594,57 @@ public class UserController {
 
         //userService.update(user);
         return "redirect:/users";
+    }
+
+    @PostMapping("/changeStatusToShipping")
+    public String promeniStatusShipping(@RequestParam(value = "id") int id) throws Exception {
+        /*User user = userService.findOne((long) id);
+
+        if(user.getRole() == Role.ADMIN || user.getRole() == Role.CUSTOMER)
+            return "error-page";*/
+
+        Cart cart = cartService.findOne((long)id);
+
+        cart.setStatus(CartStatus.SHIPPING);
+
+        cartService.update(cart);
+
+        //userService.update(user);
+        return "redirect:/my-profile";
+    }
+
+    @PostMapping("/changeStatusToCanceled")
+    public String promeniStatusCanceled(@RequestParam(value = "id") int id) throws Exception {
+       /* User user = userService.findOne((long) id);
+
+        if(user.getRole() == Role.ADMIN || user.getRole() == Role.DELIVERER)
+            return "error-page";*/
+
+        Cart cart = cartService.findOne((long)id);
+
+        cart.setStatus(CartStatus.CANCELED);
+
+        cartService.update(cart);
+
+        //userService.update(user);
+        return "redirect:/my-profile";
+    }
+
+    @PostMapping("/changeStatusToDelivered")
+    public String promeniStatusDelivered(@RequestParam(value = "id") int id) throws Exception {
+        User user = userService.findOne((long) id);
+
+        if(user.getRole() == Role.ADMIN || user.getRole() == Role.CUSTOMER)
+            return "error-page";
+
+        Cart cart = cartService.findOne((long)id);
+
+        cart.setStatus(CartStatus.DELIVERED);
+
+        cartService.update(cart);
+
+        //userService.update(user);
+        return "redirect:/my-profile";
     }
 
     @GetMapping("/back")

@@ -30,6 +30,8 @@ public class CustomerServiceImpl implements CustomerService {
 
         customerToUpdate.setFavoriteArticles(customer.getFavoriteArticles());
         customerToUpdate.setCarts(customer.getCarts());
+        customerToUpdate.setArticlesInCart(customer.getArticlesInCart());
+
         Customer savedCustomer = customerRepository.save(customerToUpdate);
         return savedCustomer;
     }

@@ -43,8 +43,9 @@ public class User implements Serializable {
 
     @Column
     protected String lastName;
-    
-    @Column
+
+
+	@Column
     protected Role role;
 
     @Column
@@ -95,6 +96,8 @@ public class User implements Serializable {
 		this.email = user.getEmail();
 		this.address = user.getAddress();
 	}
+
+
 
 	public Long getId() {
 		return id;

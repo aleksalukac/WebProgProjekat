@@ -88,13 +88,54 @@
                         </td>
                     </tr>
                 </tr>
+                CENA:
+                <tr th:text="${price}"/>
             </table>
             <!-- <p class="title" th:text="${employee.position}"></p> -->
             <br>
         </div>
-        <form method="GET" th:action="@{/logout}">
-            <button type="submit" name="submit" value="value" class="link-button">LogOut</button>
-        </form>
+        <td >
+            <form method="POST" th:action="@{/buy-cart/(id=${user.id})}">
+                <button type="submit" name="submit" value="value" class="link-button">Order!</button>
+            </form>
+        </td>
+        <hr><br>
+        <div class="card">
+            <table>
+                <tr>
+                    <th>Previous carts</th>
+
+                </tr>
+                <tr>
+                    <tr th:each="cart : ${carts}">
+
+                <tr th:each="cart : ${carts}">
+                    <div th:if="${cart.price > 0}">
+                        STATUS:
+                        <td th:text="${cart.status}"><br><hr></td>
+                        <td th:if="${cart.status.toString() != 'DELIVERED' && cart.status.toString() != 'CANCELED'}">
+                            <form method="POST" th:action="@{/changeStatusToCanceled/(id=${cart.id})}">
+                                <button type="submit" name="submit" value="value" class="pure-button">Cancel order</button>
+                            </form>
+                        </td>
+                    </div>
+                    <td><hr></td>
+                </tr>
+                        <!--tr th:text="${cart.id}"-->
+                        <!--tr th:each="article : ${cart.articles}">
+                            <td> <img th:src="@{'http://aleksa.lukac.rs/photos/' + ${article.id} + '.png'}" height = 100px></td>
+                            <td >
+                                <form method="POST" th:action="@{/delete-from-cart/(id=${article.id})}">
+                                    <button type="submit" name="submit" value="value" class="link-button">Delete from cart</button>
+                                </form>
+                            </td>
+                        </tr-->
+                        <td><hr></td>
+                    </tr>
+            </table>
+            <!-- <p class="title" th:text="${employee.position}"></p> -->
+            <br>
+        </div>
         <!-- <a id="employeeDisplayLink" th:href="${'/employees'}" style="text-align: center;">Back</a> -->
 
 

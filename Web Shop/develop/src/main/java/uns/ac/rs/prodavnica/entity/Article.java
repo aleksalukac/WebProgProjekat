@@ -87,6 +87,10 @@ public class Article implements Serializable{
         return carts;
     }
 
+    public void addCart(Cart cart) {
+        this.carts.add(cart);
+    }
+
     public void setCarts(List<Cart> carts) {
         this.carts = carts;
     }

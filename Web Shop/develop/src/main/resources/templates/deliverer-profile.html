@@ -50,9 +50,52 @@
             <!-- <p class="title" th:text="${employee.position}"></p> -->
             <br>
         </div>
-        <form method="GET" th:action="@{/logout}">
-            <button type="submit" name="submit" value="value" class="link-button">LogOut</button>
-        </form>
+        <div class="card">
+            <table>
+                <tr>
+                    <th>Orders</th>
+
+                </tr>
+                <tr>
+                <tr th:each="cart : ${carts}">
+                    <div th:if="${cart.price > 0}">
+                        STATUS:
+                        <td th:text="${cart.status}"><br><hr></td>
+                        <td th:if="${cart.status.toString() == 'BOUGHT'}">
+                            <form method="POST" th:action="@{/changeStatusToShipping/(id=${cart.id})}">
+                                <button type="submit" name="submit" value="value" class="pure-button">Change status to shipping</button>
+                            </form>
+                        </td>
+                        <td th:if="${cart.status.toString() == 'SHIPPING'}">
+                            <form method="POST" th:action="@{/changeStatusToDelivered/(id=${cart.id})}">
+                                <button type="submit" name="submit" value="value" class="pure-button">Change status to delivered</button>
+                            </form>
+                        </td>
+                    </div>
+                    <td><hr></td>
+                </tr>
+                <!--td th:if="${cart.price > 0}">
+            <!- -BOUGHT, SHIPPING, CANCELED, DELIVERED- ->
+                    <td>STATUS: </td>
+                    <td th:text="${cart.status}"><br><hr></td>
+
+                    <td th:if="${cart.status.toString() == 'BOUGHT'}">
+                        <form method="POST" th:action="@{/changeStatusToShipping/(id=${cart.id})}">
+                            <button type="submit" name="submit" value="value" class="pure-button">Change status to shipping</button>
+                        </form>
+                    </td>
+                    <td th:if="${cart.status.toString() == 'SHIPPING'}">
+                        <form method="POST" th:action="@{/changeStatusToDelivered/(id=${cart.id})}">
+                            <button type="submit" name="submit" value="value" class="pure-button">Change status to delivered</button>
+                        </form>
+                    </td>
+                </td-->
+
+
+            </table>
+            <!-- <p class="title" th:text="${employee.position}"></p> -->
+            <br>
+        </div>
         <!-- <a id="employeeDisplayLink" th:href="${'/employees'}" style="text-align: center;">Back</a> -->
 
 

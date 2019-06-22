@@ -16,9 +16,13 @@ public class Customer extends User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public Customer(){
+        //this.bonusPoints = 0;
         Cart cart = new Cart();
         this.carts.add(cart);
     }
+
+    /*@Column
+    protected int bonusPoints = 0;*/
 
     @ManyToMany(mappedBy = "favUser", fetch = FetchType.EAGER, cascade = CascadeType.ALL) //omiljeni proizvodi - svaki kupac moze da ima vise proizovda, jedan proizvod moze biti omiljeni za vise kupaca
     private Set<Article> favoriteArticles = new HashSet<>();
@@ -57,4 +61,17 @@ public class Customer extends User implements Serializable {
     public void setArticlesInCart(List<Article> articlesInCart) {
         this.articlesInCart = articlesInCart;
     }
+
+    public void deleteArticlesInCart(){ this.articlesInCart.clear();}
+
+    public void addCarts(Cart cart) { this.carts.add(cart);}
+
+/*
+    public int getBonusPoints() {
+        return bonusPoints;
+    }
+
+    public void setBonusPoints(int bonusPoints) {
+        this.bonusPoints = bonusPoints;
+    }*/
 }

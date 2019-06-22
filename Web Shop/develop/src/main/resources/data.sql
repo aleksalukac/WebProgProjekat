@@ -10,6 +10,6 @@
  INSERT INTO ARTICLE (name, description, price, amount, category, on_sale) VALUES ('fanta', 'gazirani sok', 60.00, 6, '2', true);
 
 
- INSERT INTO CART (datetime) VALUES ('2018-08-10');
- INSERT INTO CART (datetime) VALUES ('2019-03-11');
- INSERT INTO CART (datetime) VALUES ('2019-09-03');
+-- INSERT INTO CART (datetime) VALUES ('2018-08-10');
+ --INSERT INTO CART (datetime) VALUES ('2019-03-11');
+ --INSERT INTO CART (datetime) VALUES ('2019-09-03');
