@@ -45,7 +45,13 @@ public class Cart implements Serializable {
 	public void generatePrice()
 	{
 		for(Article article : articles)
+		{
 			this.price += article.getPrice();
+			if(article.getOnSale())
+			{
+				this.price -= article.getPrice() * 0.1;
+			}
+		}
 	}
 
 	public int getPrice() {

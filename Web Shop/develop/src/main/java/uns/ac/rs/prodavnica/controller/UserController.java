@@ -7,13 +7,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uns.ac.rs.prodavnica.dto.LoginDTO;
+import uns.ac.rs.prodavnica.dto.SearchDTO;
 import uns.ac.rs.prodavnica.entity.*;
 import uns.ac.rs.prodavnica.service.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class UserController {
@@ -84,6 +82,19 @@ public class UserController {
         return "error-page";
     }
 
+    @PostMapping("/cart")
+    public String pogledajKorup (@RequestParam(value = "id") int id, Model model) throws Exception {
+        Cart cart = cartService.findOne((long)id);
+
+        if(cart == null)
+            return "error-page";
+
+        model.addAttribute("cart", cart);
+        model.addAttribute("articles",cart.getArticles());
+
+        return "cart";
+    }
+
     @GetMapping("/sale")
     public String pregledajProdaju(Model model) {
         model.addAttribute("articles", articleService.findAllOnSale());
@@ -147,6 +158,8 @@ public class UserController {
                 for(Article art : customerService.findOne(u.getId()).getArticlesInCart())
                 {
                     price += art.getPrice();
+                    if(art.getOnSale())
+                        price -= art.getPrice() * 0.1;
                 }
                 model.addAttribute("price",price);
                 model.addAttribute("carts", customerService.findOne(u.getId()).getCarts());
@@ -179,6 +192,132 @@ public class UserController {
     @GetMapping("/user-created")
     public String userCreated() {
         return "user-created.html";
+    }
+    @GetMapping("/izvestaj/{id}")
+    public String izvestaj(@PathVariable(name = "id") int id, Model model)
+    {
+        int days = id;
+        model.addAttribute("days",days);
+        Logged logged = loggedService.findOne();
+
+        User user = userService.findOne(logged.getUsername());
+        if(user.getRole() == Role.ADMIN)
+        {
+            List<Cart> carts = cartService.findAll();
+            List<Cart> deliveredCarts = new ArrayList<Cart>();
+            int zarada = 0;
+            int brOtkazanih = 0;
+
+            Date date = new Date();
+
+            for(Cart cart : carts)
+            {
+                if((date.getTime() - cart.getDatetime().getTime() <=  (days * 24 * 60 * 60 * 1000)))
+                {
+                    zarada += cart.getPrice();
+                    if(cart.getStatus() == CartStatus.DELIVERED)
+                    {
+                        deliveredCarts.add(cart);
+                    }
+                    if(cart.getStatus() == CartStatus.CANCELED)
+                    {
+                        brOtkazanih++;
+                    }
+                }
+            }
+            model.addAttribute("deliveredCarts", deliveredCarts);
+            model.addAttribute("brOtkazanih", brOtkazanih);
+            model.addAttribute("zarada", zarada);
+
+            return "izvestaj";
+        }
+        return "error-page";
+    }
+
+    @PostMapping("/searchArticles")
+    public String searchArticles(@ModelAttribute SearchDTO searchDTO, Model model)
+    {
+        List<Article> articles = articleService.findAll();
+
+        List<Article> searchArticles = new ArrayList<>();
+
+        if(searchDTO.getParam1() == "" && searchDTO.getParam2() == "")
+        {
+            searchArticles.addAll(articles);
+        }
+        else
+        {
+            for(Article article : articles)
+            {
+                if((article.getName().toUpperCase().contains(searchDTO.getParam1().toUpperCase()) && searchDTO.getParam1() != "")  || (article.getName().toUpperCase().contains(searchDTO.getParam2().toUpperCase()) && searchDTO.getParam2() != "")){
+                    searchArticles.add(article);
+                    continue;
+                }
+                if((article.getDescription().toUpperCase().contains(searchDTO.getParam1().toUpperCase()) && searchDTO.getParam1() != "")  || (article.getDescription().toUpperCase().contains(searchDTO.getParam2().toUpperCase()) && searchDTO.getParam2() != "")){
+                    searchArticles.add(article);
+                    continue;
+                }
+                if((article.getCategory().toString().toUpperCase().contains(searchDTO.getParam1().toUpperCase()) && searchDTO.getParam1() != "")  || (article.getCategory().toString().toUpperCase().contains(searchDTO.getParam2().toUpperCase()) && searchDTO.getParam2() != "")){
+                    searchArticles.add(article);
+                    continue;
+                }
+                if((article.getPrice().toString().toUpperCase().contains(searchDTO.getParam1().toUpperCase()) && searchDTO.getParam1() != "")  || (article.getPrice().toString().toUpperCase().contains(searchDTO.getParam2().toUpperCase()) && searchDTO.getParam2() != "")){
+                    searchArticles.add(article);
+                    continue;
+                }
+            }
+        }
+
+
+        if(searchDTO.getSortByPrice() == 1)
+        {
+            for(int i = 0; i < searchArticles.size(); i++)
+            {
+                for(int j = i + 1; j < searchArticles.size(); j++)
+                {
+                    if(searchArticles.get(i).getPrice() < searchArticles.get(j).getPrice())
+                    {
+                        long id = searchArticles.get(i).getId();
+                        searchArticles.set(i, searchArticles.get(j));
+                        searchArticles.set(j, articleService.findOne(id));
+                    }
+                }
+
+            }
+        }
+        else if(searchDTO.getSortByPrice() == -1)
+        {
+            for(int i = 0; i < searchArticles.size(); i++)
+            {
+                for(int j = i + 1; j < searchArticles.size(); j++)
+                {
+                    if(searchArticles.get(i).getPrice() > searchArticles.get(j).getPrice())
+                    {
+                        long id = searchArticles.get(i).getId();
+                        searchArticles.set(i, searchArticles.get(j));
+                        searchArticles.set(j, articleService.findOne(id));
+                    }
+                }
+
+            }
+        }
+
+        model.addAttribute("articles", searchArticles);
+
+        Logged logged = loggedService.findOne();
+
+        if(logged == null)
+        {
+            model.addAttribute("user", null);
+        }
+        else
+        {
+            User user = userService.findOne(logged.getUsername());
+
+            model.addAttribute("user", user);
+        }
+
+        return "articles";
     }
 
     @PostMapping("/save-user")
@@ -227,7 +366,7 @@ public class UserController {
             return "error-page";
         }
 
-        model.addAttribute("loginDTO", new LoginDTO()); //<key, value> , loginDTO je kljuc
+        model.addAttribute("loginDTO", new LoginDTO());
         model.addAttribute("check", false);
 
         return "login.html";
@@ -632,10 +771,10 @@ public class UserController {
 
     @PostMapping("/changeStatusToDelivered")
     public String promeniStatusDelivered(@RequestParam(value = "id") int id) throws Exception {
-        User user = userService.findOne((long) id);
+        /*User user = userService.findOne((long) id);
 
         if(user.getRole() == Role.ADMIN || user.getRole() == Role.CUSTOMER)
-            return "error-page";
+            return "error-page";*/
 
         Cart cart = cartService.findOne((long)id);
 
@@ -701,6 +840,7 @@ public class UserController {
 
         List<Article> articles = articleService.findAll();
         model.addAttribute("articles", articles);
+        model.addAttribute("searchDTO", new SearchDTO());
 
         Logged logged = loggedService.findOne();
 

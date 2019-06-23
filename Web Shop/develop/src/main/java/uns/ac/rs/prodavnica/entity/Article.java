@@ -87,6 +87,17 @@ public class Article implements Serializable{
         return carts;
     }
 
+    //@Override
+    public int compareTo(Article compare) {
+        double compareprice = compare.getPrice();
+        /* For Ascending order*/
+        if(this.price > compareprice)
+            return 1;
+        if(this. price < compareprice)
+            return -1;
+        return 0;
+    }
+
     public void addCart(Cart cart) {
         this.carts.add(cart);
     }

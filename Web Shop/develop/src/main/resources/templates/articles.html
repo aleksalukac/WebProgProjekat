@@ -30,6 +30,31 @@
 
         <h1>Articles</h1>
 
+        <form th:action="@{/searchArticles}" th:object="${searchDTO}" method="post">
+            <label for="param1">Search criteria 1:</label>
+            <input id="param1" type="text" th:field="*{param1}"/>
+            <br>
+            <label for="param2">Search criteria 2:</label>
+            <input id="param2" type="text" th:field="*{param2}"/>
+            <br>
+            <label for="sort">Sort by price</label>
+            <select type="text" th:field="*{sortByPrice}">
+                <option value="-1">ASCENDING</option>
+                <option value="1">DESCENDING</option>
+                <option value="0">DON'T SORT</option>
+
+            </select>
+            <!--input id = "sort" type="checkbox" name="active" th:field="${sortByPrice}"  th:checked="${true}" /-->
+            <br>
+            <!--input id = "sort"
+                    type="checkbox"
+                    name="myBooleanVariable"
+                    th:checked="${sortByPrice}"/>
+            <br-->
+
+            <input class="pure-button" type="submit">
+        </form>
+
         <!--button onclick="location.href = '/add-user'">Add new user</button-->
         <br><br>
         <table id="articles">
@@ -51,22 +76,22 @@
                 <td> <img th:src="@{'http://aleksa.lukac.rs/photos/' + ${article.id} + '.png'}" height = 100px></td>
                 <td>
                 <form method="POST" th:action="@{/add-to-cart/(id=${article.id})}">
-                    <button type="submit" name="submit" value="value" class="link-button">Add to cart</button>
+                    <button type="submit" name="submit" value="value" class="pure-button">Add to cart</button>
                 </form>
                 </td>
                 <td th:if="${(user != null) && user.role.toString() == 'CUSTOMER'}">
                     <form method="POST" th:action="@{/add-to-favorite/(id=${article.id})}">
-                        <button type="submit" name="submit" value="value" class="link-button">Add to favorite articles</button>
+                        <button type="submit" name="submit" value="value" class="pure-button">Add to favorite articles</button>
                     </form>
                 </td>
                 <td th:if="${article.onSale == false && (user != null) && user.role.toString() == 'ADMIN'} ">
                     <form method="POST" th:action="@{/set-on-sale/(id=${article.id})}">
-                        <button type="submit" name="submit" value="value" class="link-button">Add on sale</button>
+                        <button type="submit" name="submit" value="value" class="pure-button">Add on sale</button>
                     </form>
                 </td>
                 <td th:if="${(user != null) && article.onSale == true && user.role.toString() == 'ADMIN'}">
                     <form method="POST" th:action="@{/set-on-sale/(id=${article.id})}">
-                        <button type="submit" name="submit" value="value" class="link-button">Delete from sale</button>
+                        <button type="submit" name="submit" value="value" class="pure-button">Delete from sale</button>
                     </form>
                 </td>
             </tr>

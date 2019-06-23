@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cart</title>
+    <meta charset="utf-8"/>
+    <link rel="shortcut icon"
+          href="http://aleksa.lukac.rs/img/logo3.png" />
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+
+
+
+    <link rel="stylesheet" type="text/css" href="http://aleksa.lukac.rs/t2/style.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/menu.css}"/>
+    <!-- <link rel="stylesheet" th:href="@{/css/employees.css}"/> -->
+</head>
+<body>
+
+<ul>
+    <li style="float:left"><font size="5"><i><img src="http://www.aleksa.lukac.rs/img/logotop.png" width="50px"/></i></font></li>
+    <li><a th:href="${'/login-logout'}">Login / Logout</a></li>
+    <li><a th:href="${'/articles'}">Articles</a></li>
+    <li><a th:href="${'/my-profile'}">My profile</a></li>
+
+</ul>
+
+<center>
+    <div style="background-color:white; width: auto;">
+
+
+        <h1>Cart</h1>
+        <table id="users">
+            <tr>
+                Id: <tr th:text="${cart.id}"></tr>
+                Cena: <tr th:text="${cart.price}"></tr>
+                Datum: <tr th:text="${cart.datetime}"></tr>
+                Kupac: <tr th:text="${cart.customer.username}"></tr>
+                Artikli:
+            </tr>
+            <!--tr>
+                <th>Id</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>See more</th>
+                <th>Delete</th>
+            </tr-->
+            <tr th:each="article : ${articles}">
+                <br><hr>
+                <td> <img th:src="@{'http://aleksa.lukac.rs/photos/' + ${article.id} + '.png'}" height = 100px></td>
+
+            </tr>
+        </table>
+    </div>
+
+</center>
+
+
+</body>
+</html>

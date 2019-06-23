@@ -54,9 +54,18 @@
                 <br>
             </div>
 
-            <form method="GET" th:action="@{/logout}">
-                <button type="submit" name="submit" value="value" class="link-button">LogOut</button>
+            <form method="GET" th:action="@{/izvestaj/1}">
+                <button type="submit" name="submit" value="value" class="pure-button">Daily report</button>
             </form>
+            <br>
+            <form method="GET" th:action="@{/izvestaj/7}">
+                <button type="submit" name="submit" value="value" class="pure-button">Report for 7 days</button>
+            </form>
+            <br>
+            <form method="GET" th:action="@{/izvestaj/20}">
+                <button type="submit" name="submit" value="value" class="pure-button">Report for 20 days</button>
+            </form>
+
             <a th:href="${'/users'}">See all users</a>
 
         </div>

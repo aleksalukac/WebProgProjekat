@@ -62,7 +62,7 @@
                         <td> <img th:src="@{'http://aleksa.lukac.rs/photos/' + ${article.id} + '.png'}" height = 100px></td>
                         <td >
                             <form method="POST" th:action="@{/delete-from-favorite/(id=${article.id})}">
-                                <button type="submit" name="submit" value="value" class="link-button">Delete from favorite articles</button>
+                                <button type="submit" name="submit" value="value" class="pure-button">Delete from favorite articles</button>
                             </form>
                         </td>
                 </tr>
@@ -83,7 +83,7 @@
                         <td> <img th:src="@{'http://aleksa.lukac.rs/photos/' + ${article.id} + '.png'}" height = 100px></td>
                         <td >
                             <form method="POST" th:action="@{/delete-from-cart/(id=${article.id})}">
-                                <button type="submit" name="submit" value="value" class="link-button">Delete from cart</button>
+                                <button type="submit" name="submit" value="value" class="pure-button">Delete from cart</button>
                             </form>
                         </td>
                     </tr>
@@ -96,14 +96,15 @@
         </div>
         <td >
             <form method="POST" th:action="@{/buy-cart/(id=${user.id})}">
-                <button type="submit" name="submit" value="value" class="link-button">Order!</button>
+                <button type="submit" name="submit" value="value" class="pure-button">Order!</button>
             </form>
         </td>
         <hr><br>
         <div class="card">
+            <th>Previous carts</th>
             <table>
                 <tr>
-                    <th>Previous carts</th>
+
 
                 </tr>
                 <tr>
@@ -113,11 +114,17 @@
                     <div th:if="${cart.price > 0}">
                         STATUS:
                         <td th:text="${cart.status}"><br><hr></td>
+                        <form method="POST" th:action="@{/cart/(id=${cart.id})}">
+                            <button type="submit" name="submit" value="value" class="pure-button">View cart</button>
+                        </form>
                         <td th:if="${cart.status.toString() != 'DELIVERED' && cart.status.toString() != 'CANCELED'}">
                             <form method="POST" th:action="@{/changeStatusToCanceled/(id=${cart.id})}">
                                 <button type="submit" name="submit" value="value" class="pure-button">Cancel order</button>
                             </form>
+
                         </td>
+                        <hr>
+
                     </div>
                     <td><hr></td>
                 </tr>
