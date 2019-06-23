@@ -42,16 +42,19 @@
             </tr-->
             <hr>
             Delivered carts:
-            <!--tr th:each="cart : ${deliveredCarts}">
-            <tr>
-                <!--div th:if="${cart.price > 0}"- ->
+            <tr th:each="cart : ${deliveredCarts}">
+            <!--form method="POST" th:action="@{/cart/(id=${cart.getId()})}">
+                <button type="submit" name="submit" value="value" class="pure-button">View cart</button>
+            </form-->
+
+                <div th:if="${cart.getPrice() > 0}">
                     STATUS:
-                    <td th:text="${cart.status}"><br><hr></td>
-                        <form method="POST" th:action="@{/cart/(id=${cart.id})}">
+                    <td th:text="${cart.getStatus()}"><br><hr></td>
+                        <form method="POST" th:action="@{/cart/(id=${cart.getId()})}">
                         <button type="submit" name="submit" value="value" class="pure-button">View cart</button>
                     </form>
-                    <td th:if="${cart.status.toString() != 'DELIVERED' && cart.status.toString() != 'CANCELED'}">
-                        <form method="POST" th:action="@{/changeStatusToCanceled/(id=${cart.id})}">
+                    <td th:if="${cart.getStatus().toString() != 'DELIVERED' && cart.getStatus().toString() != 'CANCELED'}">
+                        <form method="POST" th:action="@{/changeStatusToCanceled/(id=${cart.getId()})}">
                             <button type="submit" name="submit" value="value" class="pure-button">Cancel order</button>
                         </form>
 
