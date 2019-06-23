@@ -11,5 +11,9 @@ public interface ArticleService {
 
     List<Article> findAllOnSale();
 
+    Article registration(Article article);
+
+    void delete(Long id);
+
     Article update(Article article) throws Exception;
 }

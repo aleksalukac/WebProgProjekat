@@ -43,7 +43,7 @@ public class Article implements Serializable{
     private Boolean onSale;
 
     @Column
-    private Integer amount;
+    private Integer amount = 500;
 
     @Column
     private ArticleCategory category;

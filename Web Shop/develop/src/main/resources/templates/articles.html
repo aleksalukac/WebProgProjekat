@@ -30,6 +30,10 @@
 
         <h1>Articles</h1>
 
+        <form method="GET" th:action="@{/sale}">
+            <button type="submit" name="submit" value="value" class="pure-button">View articles on sale</button>
+        </form>
+
         <form th:action="@{/searchArticles}" th:object="${searchDTO}" method="post">
             <label for="param1">Search criteria 1:</label>
             <input id="param1" type="text" th:field="*{param1}"/>
@@ -92,6 +96,11 @@
                 <td th:if="${(user != null) && article.onSale == true && user.role.toString() == 'ADMIN'}">
                     <form method="POST" th:action="@{/set-on-sale/(id=${article.id})}">
                         <button type="submit" name="submit" value="value" class="pure-button">Delete from sale</button>
+                    </form>
+                </td>
+                <td th:if="${user.role.toString() == 'ADMIN'} ">
+                    <form method="POST" th:action="@{/delete-article/(id=${article.id})}">
+                        <button type="submit" name="submit" value="value" class="pure-button">Delete article</button>
                     </form>
                 </td>
             </tr>

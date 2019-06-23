@@ -82,6 +82,32 @@ public class UserController {
         return "error-page";
     }
 
+
+    @PostMapping("/delete-article")
+    public String deleteArticle(@RequestParam(value = "id") int id) {
+        Article article = articleService.findOne((long) id);
+
+        Logged logged = loggedService.findOne();
+
+        if(logged == null)
+        {
+            return "error-page";
+        }
+
+        User user = userService.findOne((logged.getUsername()));
+
+        //Customer customer = customerService.findOne(user.getId());
+
+        if(user.getRole() == Role.ADMIN)
+        {
+            articleService.delete((long)id);
+
+            //articlesOnSale.add(article);
+            return "redirect:/articles";
+        }
+        return "error-page";
+    }
+
     @PostMapping("/cart")
     public String pogledajKorup (@RequestParam(value = "id") int id, Model model) throws Exception {
         Cart cart = cartService.findOne((long)id);
@@ -174,12 +200,21 @@ public class UserController {
         return "customer-profile";
     }
 
+    @GetMapping("/add-article")
+    public String addArticle(@ModelAttribute("check") String check, Model model) {
+        boolean b = check.equals("true");
+        model.addAttribute("article", new Article());
+        model.addAttribute("check", b);
+
+        return "add-new-article.html";
+    }
+
     @GetMapping("/add-user")
     public String addUser(@ModelAttribute("check") String check, Model model) {
-        boolean b = check.equals("true"); // "true" == "true" , "false" == "true"
+        boolean b = check.equals("true");
         model.addAttribute("user", new User());
         model.addAttribute("check", b);
-        System.out.println("h");
+
         return "add-user.html";
     }
 
@@ -193,6 +228,12 @@ public class UserController {
     public String userCreated() {
         return "user-created.html";
     }
+
+    @GetMapping("/article-created")
+    public String articleCreated() {
+        return "article-created.html";
+    }
+
     @GetMapping("/izvestaj/{id}")
     public String izvestaj(@PathVariable(name = "id") int id, Model model)
     {
@@ -318,6 +359,25 @@ public class UserController {
         }
 
         return "articles";
+    }
+
+    @PostMapping("/save-article")
+    public String saveArticle(@ModelAttribute Article article, BindingResult errors, Model model, RedirectAttributes rattrs)
+            throws Exception {
+
+        article.setName(article.getName());
+        article.setDescription(article.getDescription());
+        article.setPrice(article.getPrice());
+        article.setCategory(article.getCategory());
+
+        Article a = this.articleService.registration(article);
+        if (a == null)
+        {
+            rattrs.addFlashAttribute("check","true");  //neuspesna registracija
+            return "redirect:/add-article";
+        }
+
+        return "redirect:article-created";
     }
 
     @PostMapping("/save-user")

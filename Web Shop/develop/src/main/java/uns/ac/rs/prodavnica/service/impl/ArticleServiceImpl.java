@@ -35,6 +35,19 @@ public class ArticleServiceImpl implements ArticleService {
         return articlesOnSale;
     }
 
+
+    @Override
+    public void delete(Long id) {
+        Article article = articleRepository.getOne(id);
+        articleRepository.delete(article);
+    }
+    @Override
+    public Article registration(Article article) {
+
+            return articleRepository.save(article);
+
+    }
+
     @Override
     public Article update(Article article) throws Exception {
         Article articleToUpdate = articleRepository.getOne(article.getId());
