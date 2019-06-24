@@ -36,6 +36,7 @@
                     <th>Address</th>
                     <th>Email</th>
                     <th>Role</th>
+                    <th>Bonus points</th>
 
                 </tr>
                 <tr>
@@ -45,6 +46,7 @@
                     <td th:text="${user.address}"></td>
                     <td th:text="${user.email}"></td>
                     <td th:text="${user.role}"></td>
+                    <td th:text="${user.getBonusPoints()}"></td>
                 </tr>
             </table>
             <!-- <p class="title" th:text="${employee.position}"></p> -->

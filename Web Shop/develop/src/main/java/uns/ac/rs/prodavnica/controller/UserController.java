@@ -675,6 +675,24 @@ public class UserController {
 
         cart.generatePrice();
 
+        if(customer.getBonusPoints() >= 5)
+        {
+            if(customer.getBonusPoints() >= 10)
+            {
+                cart.setPrice(cart.getPrice() * 0.8);
+                customer.setBonusPoints(customer.getBonusPoints() - 10);
+            }
+            else
+            {
+                cart.setPrice(cart.getPrice() * 0.9);
+                customer.setBonusPoints(customer.getBonusPoints() - 5);
+            }
+        }
+        if(cart.getPrice() > 1000)
+        {
+            customer.setBonusPoints(customer.getBonusPoints() + 1);
+        }
+
         customerService.update(customer);
         cartService.update(cart);
 /*

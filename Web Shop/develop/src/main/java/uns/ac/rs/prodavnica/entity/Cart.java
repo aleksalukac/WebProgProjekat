@@ -24,7 +24,7 @@ public class Cart implements Serializable {
 	private Date datetime;
 
 	@Column
-	private int price;
+	private double price;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Customer customer;
@@ -54,11 +54,11 @@ public class Cart implements Serializable {
 		}
 	}
 
-	public int getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 
