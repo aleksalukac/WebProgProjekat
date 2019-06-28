@@ -1,2 +1,2 @@
 # WebProgProjekat
-A Project for a course in Web programming
+A Spring boot E-Shop Project for a course in Web programming
